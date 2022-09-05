@@ -107,8 +107,8 @@
                 let resultContainer = document.getElementById('resultId');
                 resultContainer.innerHTML = 'Loading ...';
                 let { data } = await axios.post('http://localhost:3001/scrapping/' + from, { keyword })
-                if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
                 resultContainer.innerHTML = '';
+                if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
                 data.articles.map(ele => {
                     resultContainer.innerHTML += `<div class="result-ele">
             <p><b>title</b> : ${ele.title}</p>
