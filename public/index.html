@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrapping Data</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        nav {
+            width: 80vw;
+            margin-left: 10vw;
+            background: rgb(59, 157, 174);
+            padding: 10px;
+            color: white;
+        }
+
+        nav>h1 {
+            font-size: 30px;
+            text-decoration: underline;
+        }
+
+        .menu {
+            width: 80vw;
+            margin-left: 10vw;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .menu>input {
+            width: 50%;
+            height: 20px;
+            font-size: 15px;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .menu-plateform {
+            width: 50%;
+        }
+
+        .menu-plateform>input {
+            margin-left: 20px;
+        }
+
+        .menu>button {
+            margin-top: 20px;
+        }
+
+
+        .result {
+            width: 80vw;
+            margin-left: 10vw;
+            border: 1px solid black;
+            margin-top: 30px;
+        }
+
+        .result-ele {
+            padding: 10px;
+        }
+
+        .result-ele>.title {}
+
+        .result-ele>.link {}
+
+        .result-ele:nth-child(2n) {
+            background-color: rgba(187, 187, 187, 0.413);
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <h1>Scrapping your Data!</h1>
+        <p>We are helping to get your actual data with your keywords ...</p>
+    </nav>
+
+    <div class="menu">
+        <input id="idKeyword" type="text" placeholder="Keyword ..." />
+        <fieldset class="menu-plateform">
+            <legend>Plateform : </legend>
+            <input id="hespressid" value="hespress" type="radio" name="plateform" /> <label for="hespressid">
+                Hespress</label>
+            <input id="lematinid" value="le-matin" type="radio" name="plateform" /> <label for="lematinid"> Le
+                Matin</label>
+        </fieldset>
+        <button onclick="startScrapping()">Start scrapping!</button>
+    </div>
+    <div id="resultId" class="result">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        async function startScrapping() {
+            let keyword = document.getElementById('idKeyword').value;
+            let from = document.getElementById('hespressid').checked ? document.getElementById('hespressid').value : document.getElementById('lematinid').checked ? document.getElementById('lematinid').value : undefined;
+            if (!keyword || !from) {
+                alert('Should set a keyword and choose a plateform for scappring data')
+            } else {
+                let resultContainer = document.getElementById('resultId');
+                resultContainer.innerHTML = 'Loading ...';
+                let { data } = await axios.post('http://localhost:3001/scrapping/' + from, { keyword })
+                if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
+                resultContainer.innerHTML = '';
+                data.articles.map(ele => {
+                    resultContainer.innerHTML += `<div class="result-ele">
+            <p><b>title</b> : ${ele.title}</p>
+            <p><b>link</b>  : <a target=”_blank” href="${ele.link}">${ele.link}</a></p>
+        </div>`
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>
