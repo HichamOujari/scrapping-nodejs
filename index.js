@@ -14,6 +14,7 @@ const port = 3001;
 
 const ScrappingHespress = require('./controllers/scrapping-hespress');
 const ScrappingLeMatin = require('./controllers/scrapping-le-matin');
+const ScrappingMusic = require('./controllers/scrapping-music');
 
 
 app.get("/",(req,res)=>{
@@ -25,6 +26,9 @@ app.post("/scrapping/hespress",(request,response)=>{
 
 app.post("/scrapping/le-matin",(request,response)=>{
     ScrappingLeMatin(response,request);
+})
+app.post("/scrapping/music",(request,response)=>{
+    ScrappingMusic(response,request);
 })
 
 

@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrapping Data</title>
+    <title>Welcome to U-Radio</title>
+    <link rel="icon" type="image/png" href="/assets/logo.png" src="/assets/logo.png">
     <style>
         body {
             margin: 0;
@@ -15,9 +16,17 @@
         nav {
             width: 80vw;
             margin-left: 10vw;
-            background: rgb(59, 157, 174);
+            background: #E87023;
             padding: 10px;
             color: white;
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        nav>img{
+            width: 300px;
+            height:150px;
         }
 
         nav>h1 {
@@ -51,8 +60,12 @@
             margin-left: 20px;
         }
 
-        .menu>button {
+        .menu>.buttons {
             margin-top: 20px;
+        }
+
+        .buttons>button {
+            margin-left: 10px;
         }
 
 
@@ -61,10 +74,23 @@
             margin-left: 10vw;
             border: 1px solid black;
             margin-top: 30px;
+            overflow:hidden;
+            background: #E87023;
         }
 
         .result-ele {
             padding: 10px;
+            display: flex;
+
+        }
+
+        .result-ele>img {
+            width: 200px;
+            height: 200px;
+        }
+
+        .result-ele>.right {
+            margin-left: 20px;
         }
 
         .result-ele>.title {}
@@ -79,8 +105,9 @@
 
 <body>
     <nav>
-        <h1>Scrapping your Data!</h1>
-        <p>We are helping to get your actual data with your keywords ...</p>
+        <img src="./assets/logo.png" />
+        <h1>Welcome to U-Radio plateform</h1>
+        <p>We're helping to get your actual data with a specified keywords ...</p>
     </nav>
 
     <div class="menu">
@@ -91,30 +118,56 @@
                 Hespress</label>
             <input id="lematinid" value="le-matin" type="radio" name="plateform" /> <label for="lematinid"> Le
                 Matin</label>
+            <input id="musicid" value="music" type="radio" name="plateform" /> <label for="musicid"> Music</label>
         </fieldset>
-        <button onclick="startScrapping()">Start scrapping!</button>
+        <div class="buttons">
+            <button onclick="startScrapping(false)">Start scrapping!</button>
+            <button onclick="startScrapping(true)">Export data</button>
+        </div>
     </div>
     <div id="resultId" class="result">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
-        async function startScrapping() {
+        async function startScrapping(toExport) {
             let keyword = document.getElementById('idKeyword').value;
-            let from = document.getElementById('hespressid').checked ? document.getElementById('hespressid').value : document.getElementById('lematinid').checked ? document.getElementById('lematinid').value : undefined;
+            let from = document.getElementById('hespressid').checked ? document.getElementById('hespressid').value : document.getElementById('lematinid').checked ? document.getElementById('lematinid').value : document.getElementById('musicid').checked ? document.getElementById('musicid').value:undefined;
             if (!keyword || !from) {
                 alert('Should set a keyword and choose a plateform for scappring data')
             } else {
                 let resultContainer = document.getElementById('resultId');
                 resultContainer.innerHTML = 'Loading ...';
-                let { data } = await axios.post('http://localhost:3001/scrapping/' + from, { keyword })
-                resultContainer.innerHTML = '';
-                if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
-                data.articles.map(ele => {
-                    resultContainer.innerHTML += `<div class="result-ele">
-            <p><b>title</b> : ${ele.title}</p>
-            <p><b>link</b>  : <a target=”_blank” href="${ele.link}">${ele.link}</a></p>
-        </div>`
-                })
+                if (toExport) {
+
+                    axios({
+                        url: 'http://localhost:3001/scrapping/' + from,
+                        method: 'POST',
+                        responseType: 'blob',
+                        data: { keyword, format: 'csv' }
+                    }).then((response) => {
+                        const url = window.URL.createObjectURL(new Blob([response.data]));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', 'file.csv');
+                        document.body.appendChild(link);
+                        link.click();
+                    });
+                    resultContainer.innerHTML = 'Done!'
+                } else {
+                    let { data } = await axios.post('http://localhost:3001/scrapping/' + from, { keyword })
+                    resultContainer.innerHTML = '';
+                    if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
+                    data.articles.map(ele => {
+                        resultContainer.innerHTML += `<div class="result-ele">
+                                                        <img width="200" height="200" src="${ele.img}" />
+                                                        <div class="right">
+                                                            <p><b>title</b> : ${ele.title}</p>
+                                                            <p><b>link</b>  : <a target=”_blank” href="${ele.link}">click to visit</a></p>
+                                                        </div>
+
+                                                    </div>`
+                    })
+                }
             }
         }
     </script>
