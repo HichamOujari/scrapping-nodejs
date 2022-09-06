@@ -141,7 +141,7 @@
                 if (toExport) {
 
                     axios({
-                        url: 'http://localhost:3001/scrapping/' + from,
+                        url: '/scrapping/' + from,
                         method: 'POST',
                         responseType: 'blob',
                         data: { keyword, format: 'csv' }
@@ -155,7 +155,7 @@
                     });
                     resultContainer.innerHTML = 'Done!'
                 } else {
-                    let { data } = await axios.post('http://localhost:3001/scrapping/' + from, { keyword })
+                    let { data } = await axios.post('/scrapping/' + from, { keyword })
                     resultContainer.innerHTML = '';
                     if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
                     data.articles.map(ele => {
