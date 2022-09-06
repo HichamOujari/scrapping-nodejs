@@ -1,5 +1,6 @@
 const jsonToCsv = require('./util')
 const axios = require('axios')
+const fetch = require("node-fetch")
 
 async function ScrappingGoogle(res, req) {
     try {

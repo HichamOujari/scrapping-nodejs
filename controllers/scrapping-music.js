@@ -1,4 +1,5 @@
 const jsonToCsv = require('./util')
+const fetch = require("node-fetch")
 
 async function ScrappingLeMatin(res, req) {
     try {
