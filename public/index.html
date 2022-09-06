@@ -118,7 +118,8 @@
                 Hespress</label>
             <input id="lematinid" value="le-matin" type="radio" name="plateform" /> <label for="lematinid"> Le
                 Matin</label>
-            <input id="musicid" value="music" type="radio" name="plateform" /> <label for="musicid"> Music</label>
+                <input id="musicid" value="music" type="radio" name="plateform" /> <label for="musicid"> Music</label>
+                <input id="googleid" value="google" type="radio" name="plateform" /> <label for="googleid"> Google Actualites</label>
         </fieldset>
         <div class="buttons">
             <button onclick="startScrapping(false)">Start scrapping!</button>
@@ -131,7 +132,7 @@
     <script>
         async function startScrapping(toExport) {
             let keyword = document.getElementById('idKeyword').value;
-            let from = document.getElementById('hespressid').checked ? document.getElementById('hespressid').value : document.getElementById('lematinid').checked ? document.getElementById('lematinid').value : document.getElementById('musicid').checked ? document.getElementById('musicid').value:undefined;
+            let from = document.getElementById('hespressid').checked ? document.getElementById('hespressid').value : document.getElementById('lematinid').checked ? document.getElementById('lematinid').value : document.getElementById('musicid').checked ? document.getElementById('musicid').value:document.getElementById('googleid').checked ? document.getElementById('googleid').value: undefined;
             if (!keyword || !from) {
                 alert('Should set a keyword and choose a plateform for scappring data')
             } else {
@@ -159,7 +160,7 @@
                     if (data.articles.length == 0) resultContainer.innerHTML = 'No Data found!'
                     data.articles.map(ele => {
                         resultContainer.innerHTML += `<div class="result-ele">
-                                                        <img width="200" height="200" src="${ele.img}" />
+                                                        <img width="200" height="200" src="${ele.img ?ele.img:'./assets/no-image.png'}" />
                                                         <div class="right">
                                                             <p><b>title</b> : ${ele.title}</p>
                                                             <p><b>link</b>  : <a target=”_blank” href="${ele.link}">click to visit</a></p>
